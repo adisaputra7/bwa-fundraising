@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type userHandler struct {
 	userService user.Service
 	authService auth.Service
@@ -47,7 +46,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	
+
 	formatter := user.FormatUser(newUser, token)
 	response := helper.APIResponse("Account has been registered", http.StatusOK, "success", formatter)
 
@@ -90,10 +89,9 @@ func (h *userHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 
-
 }
 
-func (h *userHandler)CheckEmailAvailablelity(c *gin.Context) {
+func (h *userHandler) CheckEmailAvailablelity(c *gin.Context) {
 	var input user.CheckEmailInput
 
 	err := c.ShouldBindJSON(&input)
@@ -130,14 +128,14 @@ func (h *userHandler)CheckEmailAvailablelity(c *gin.Context) {
 }
 
 func (h *userHandler) UploadAvatar(c *gin.Context) {
-	
+
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		data := gin.H{"is_uploaded": false}
 		response := helper.APIResponse("Failed to upload avatar image", http.StatusBadRequest, "error", data)
 
 		c.JSON(http.StatusBadRequest, response)
-		return 
+		return
 	}
 
 	currentUser := c.MustGet("currentUser").(user.User)
@@ -152,7 +150,7 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 
 		c.JSON(http.StatusBadRequest, response)
 		return
-	}	
+	}
 
 	_, err = h.userService.SaveAvatar(userID, path)
 	if err != nil {
@@ -169,3 +167,12 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+func (h *userHandler) FetchUser(c *gin.Context) {
+	currentUser := c.MustGet("currentUser").(user.User)
+
+	formatter := user.FormatUser(currentUser, "")
+
+	response := helper.APIResponse("Successfully fetch user data", http.StatusOK, "success", formatter)
+
+	c.JSON(http.StatusOK, response)
+}
