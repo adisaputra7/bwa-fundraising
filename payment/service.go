@@ -7,7 +7,6 @@ import (
 	midtrans "github.com/veritrans/go-midtrans"
 )
 
-
 type service struct {
 }
 
@@ -21,13 +20,13 @@ func NewService() *service {
 
 func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string, error) {
 	midclient := midtrans.NewClient()
-    midclient.ServerKey = "SB-Mid-server-umDLPPHAW4PrMlbjDDOYtQr8" // "YOUR-VT-SERVER-KEY"
-    midclient.ClientKey = "SB-Mid-client-1v4EdBdLbtSIyX3B"    // "YOUR-VT-CLIENT-KEY"
-    midclient.APIEnvType = midtrans.Sandbox
+	midclient.ServerKey = "SB-Mid-server-umDLPPHAW4PrMlbjDDOYtQr8"
+	midclient.ClientKey = "SB-Mid-client-1v4EdBdLbtSIyX3B"
+	midclient.APIEnvType = midtrans.Sandbox
 
-    snapGateway := midtrans.SnapGateway{
-        Client: midclient,
-    }
+	snapGateway := midtrans.SnapGateway{
+		Client: midclient,
+	}
 
 	snapReq := &midtrans.SnapReq{
 		CustomerDetail: &midtrans.CustDetail{
@@ -35,12 +34,12 @@ func (s *service) GetPaymentURL(transaction Transaction, user user.User) (string
 			FName: user.Name,
 		},
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID: strconv.Itoa(transaction.ID),
+			OrderID:  strconv.Itoa(transaction.ID),
 			GrossAmt: int64(transaction.Amount),
 		},
 	}
-	
-    snapTokenResp, err := snapGateway.GetToken(snapReq)
+
+	snapTokenResp, err := snapGateway.GetToken(snapReq)
 	if err != nil {
 		return "", err
 	}
