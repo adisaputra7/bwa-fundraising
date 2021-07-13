@@ -36,6 +36,7 @@ func (s *service) RegisterUser(input RegisterUserInput) (User, error) {
 
 	user.PasswordHash = string(PasswordHash)
 	user.Role = "user"
+	user.Token = ""
 
 	newUser, err := s.repository.Save(user)
 	if err != nil {
@@ -55,7 +56,7 @@ func (s *service) Login(input LoginInput) (User, error) {
 	}
 
 	if user.ID == 0 {
-		return user, errors.New("No user found on that email")
+		return user, errors.New("no user found on that email")
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
@@ -106,7 +107,7 @@ func (s *service) GetUserByID(id int) (User, error) {
 	}
 
 	if user.ID == 0 {
-		return user, errors.New("No user found on that ID")
+		return user, errors.New("no user found on that ID")
 	}
 
 	return user, nil
